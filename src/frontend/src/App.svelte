@@ -7,6 +7,7 @@
 
   onMount(async () => {
     const count = await counter.read();
+    console.log('type of count:', typeof count);
     console.log('The count is: ', count);
   })
 </script>

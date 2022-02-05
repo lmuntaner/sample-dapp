@@ -35,4 +35,4 @@ export const canisterId = process.env.COUNTER_CANISTER_ID;
  * A ready-to-use agent for the counter canister
  * @type {import("@dfinity/agent").ActorSubclass<import("./counter.did.js")._SERVICE>}
  */
- export const counter = createActor(canisterId);
+ export const counter = createActor(canisterId, { agentOptions: { host: 'http://localhost:8000/' }});
