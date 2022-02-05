@@ -2,11 +2,13 @@ import svelte from "rollup-plugin-svelte";
 import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
 import livereload from "rollup-plugin-livereload";
+import sveltePreprocess from "svelte-preprocess";
 import { terser } from "rollup-plugin-terser";
 import css from "rollup-plugin-css-only";
 import replace from "@rollup/plugin-replace";
-import inject from "rollup-plugin-inject";
+import inject from "@rollup/plugin-inject";
 import json from "@rollup/plugin-json";
+import typescript from "@rollup/plugin-typescript";
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -69,6 +71,7 @@ function serve() {
 
   return {
     writeBundle() {
+      console
       if (server) return;
       server = require("child_process").spawn(
         "npm",
@@ -86,7 +89,7 @@ function serve() {
 }
 
 export default {
-  input: "src/main.js",
+  input: "src/main.ts",
   output: {
     sourcemap: true,
     format: "iife",
@@ -95,6 +98,12 @@ export default {
   },
   plugins: [
     svelte({
+      preprocess: sveltePreprocess({
+        sourceMap: !production,
+        postcss: {
+          plugins: [require("autoprefixer")()],
+        },
+      }),
       compilerOptions: {
         // enable run-time checks when not in production
         dev: !production,
@@ -114,14 +123,26 @@ export default {
       browser: true,
       dedupe: ["svelte"],
     }),
+    commonjs(),
+    // globals(),
+    typescript({
+      sourceMap: !production,
+      inlineSources: !production,
+    }),
+    inject({
+      Buffer: ["buffer", "Buffer"],
+      // process: "process/browser",
+    }),
+    json(),
     // Add canister ID's & network to the environment
     replace(
       Object.assign(
         {
+          preventAssignment: true,
           "process.env.DFX_NETWORK": JSON.stringify(network),
           "process.env.NODE_ENV": JSON.stringify(
             production ? "production" : "development"
-          ),
+            ),
         },
         ...Object.keys(canisterIds)
           .filter((canisterName) => canisterName !== "__Candid_UI")
@@ -131,12 +152,6 @@ export default {
           }))
       )
     ),
-    commonjs(),
-    inject({
-      Buffer: ["buffer", "Buffer"],
-      process: "process/browser",
-    }),
-    json(),
 
     // In dev mode, call `npm run start` once
     // the bundle has been generated

@@ -1,5 +1,10 @@
 {
   "canisters": {
+    "counter": {
+      "candid": "src/counter/counter.did",
+      "package": "counter",
+      "type": "rust"
+    },
     "frontend": {
       "frontend": {
         "entrypoint": "src/frontend/public/index.html"

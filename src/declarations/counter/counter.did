@@ -1,0 +1,6 @@
+service : {
+    "start": () -> ();
+    "read": () -> (nat) query;
+    "write": (nat) -> ();
+    "inc": () -> ();
+}

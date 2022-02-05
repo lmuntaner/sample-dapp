@@ -1,6 +1,14 @@
-<script>
+<script lang="ts">
   import CanisterIds from "./components/CanisterIds.svelte";
   import Links from "./components/Links.svelte";
+  import { counter } from "../../declarations/counter";
+  // import { counter } from "./counter";
+  import { onMount } from "svelte";
+
+  onMount(async () => {
+    const count = await counter.read();
+    console.log('The count is: ', count);
+  })
 </script>
 
 <main>
