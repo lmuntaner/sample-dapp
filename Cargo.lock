@@ -769,6 +769,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "surveys"
+version = "0.1.0"
+dependencies = [
+ "ic-cdk",
+ "ic-cdk-macros",
+ "serde",
+ "serde_derive",
+]
+
+[[package]]
 name = "syn"
 version = "1.0.86"
 source = "registry+https://github.com/rust-lang/crates.io-index"

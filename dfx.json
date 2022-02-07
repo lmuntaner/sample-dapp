@@ -5,6 +5,11 @@
       "package": "counter",
       "type": "rust"
     },
+    "surveys": {
+      "candid": "src/surveys/surveys.did",
+      "package": "surveys",
+      "type": "rust"
+    },
     "frontend": {
       "frontend": {
         "entrypoint": "src/frontend/public/index.html"
