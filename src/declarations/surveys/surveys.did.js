@@ -1,7 +1,7 @@
 export const idlFactory = ({ IDL }) => {
   const Question = IDL.Record({ 'title' : IDL.Text });
   const Survey = IDL.Record({
-    'id' : IDL.Text,
+    'id' : IDL.Nat64,
     'title' : IDL.Text,
     'questions' : IDL.Vec(Question),
   });

@@ -2,14 +2,25 @@
   import { canisterId, createActor } from "../../declarations/surveys";
   import { onMount } from "svelte";
 
-  let title: string = "The question is";
-  let questions: string[] = ["Will this work?", "At some point?"];
+  type Question = {
+    title: string;
+  }
+
+  type Survey = {
+    id: string;
+    title: string;
+    questions: Question[];
+  };
+
+  let title: string;
+  let questions: string[] = [];
   let surveysActor;
+  let surveys: Array<Survey> = [];
+  let currentSurvey: Survey | undefined;
 
   onMount(async () => {
     surveysActor = createActor(canisterId, { agentOptions: { host: 'http://localhost:8000' } });
-    const surveys = await surveysActor.read_all();
-    console.log('type of count:', typeof surveys);
+    surveys = await surveysActor.read_all();
     console.log('The count is: ', surveys);
   })
 
@@ -24,6 +35,14 @@
       console.log(error);
     }
   }
+
+  const openSurvey = (survey) => {
+    currentSurvey = survey;
+  };
+
+  const closeSurvey = () => {
+    currentSurvey = undefined;
+  };
 </script>
 
 <main>
@@ -37,6 +56,27 @@
       <button type="submit" on:click|preventDefault={createSurvey}>Create</button>
     </form>
   </div>
+  {#if currentSurvey}
+  <div>
+    <h3>{currentSurvey.title}</h3>
+    <div class="surveys">
+      {#each currentSurvey.questions as question}
+        <span>{question.title}</span>
+        <input type="text" />
+      {/each}
+    </div>
+    <span role="button" on:click={closeSurvey}>Back to questions</span>
+  </div>
+  {:else}
+    <div>
+      <h3>Select a survey</h3>
+      <div class="surveys">
+        {#each surveys as survey}
+          <span role="button" on:click={() => openSurvey(survey)}>{survey.title}</span>
+        {/each}
+      </div>
+    </div>
+  {/if}
 </main>
 
 <style>
@@ -54,6 +94,13 @@
   }
   input {
     width: 50%;
+  }
+
+  .surveys {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
   }
 
   @media (min-width: 640px) {

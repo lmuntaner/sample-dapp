@@ -1,6 +1,6 @@
 use ic_cdk_macros::*;
 use ic_cdk::export::{candid::{CandidType, Deserialize}};
-use std::cell::RefCell;
+use std::cell::{Cell, RefCell};
 
 #[derive(Clone, Debug, CandidType, Deserialize)]
 struct Question {
@@ -9,13 +9,14 @@ struct Question {
 
 #[derive(Clone, Debug, CandidType, Deserialize)]
 struct Survey {
-  id: String,
+  id: u64,
   title: String,
   questions: Vec<Question>,
 }
 
 thread_local! {
     static SURVEYS: RefCell<Vec<Survey>> = RefCell::new(Vec::new());
+    static NEXT_USER_ID: Cell<u64> = Cell::new(0);
 }
 
 #[init]
@@ -25,7 +26,6 @@ fn init() {
 
 #[query]
 fn read_all() -> Vec<Survey> {
-    ic_cdk::println!("in da read_all");
     SURVEYS.with(|surveys| {
         return surveys.borrow_mut().clone();
     })
@@ -43,12 +43,17 @@ fn create(title: String, question_inputs: Vec<String>) -> Survey {
                 }
             })
             .collect();
-        let new_survey = Survey {
-            id: "1".to_string(),
-            title: title,
-            questions: questions,
-        };
-        surveys.push(new_survey);
-        return surveys[surveys.len() - 1].clone();
+        ic_cdk::println!("in da surveys create");
+        NEXT_USER_ID.with(|next_user_id_ref| {
+            let mut counter = next_user_id_ref.get();
+            counter += 1u64;
+            let new_survey = Survey {
+                id: counter,
+                title: title,
+                questions: questions,
+            };
+            surveys.push(new_survey);
+            return surveys[surveys.len() - 1].clone();
+        })
     })
 }

@@ -1,7 +1,7 @@
 import type { Principal } from '@dfinity/principal';
 export interface Question { 'title' : string }
 export interface Survey {
-  'id' : string,
+  'id' : bigint,
   'title' : string,
   'questions' : Array<Question>,
 }
