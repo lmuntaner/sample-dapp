@@ -1,10 +1,5 @@
 {
   "canisters": {
-    "counter": {
-      "candid": "src/counter/counter.did",
-      "package": "counter",
-      "type": "rust"
-    },
     "surveys": {
       "candid": "src/surveys/surveys.did",
       "package": "surveys",

@@ -35,4 +35,4 @@ export const canisterId = process.env.SURVEYS_CANISTER_ID;
  * A ready-to-use agent for the surveys canister
  * @type {import("@dfinity/agent").ActorSubclass<import("./surveys.did.js")._SERVICE>}
  */
-//  export const surveys = createActor(canisterId);
+ export const surveys = createActor(canisterId);

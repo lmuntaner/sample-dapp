@@ -1,0 +1,14 @@
+type Question = record {
+    title : text;
+};
+
+type Survey = record {
+    id : nat64;
+    title : text;
+    questions : vec Question;
+};
+
+service : {
+    "read_all": () -> (vec Survey) query;
+    "create": (title: text, questions: vec text) -> (Survey);
+}
