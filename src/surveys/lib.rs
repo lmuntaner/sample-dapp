@@ -47,6 +47,7 @@ fn create(title: String, question_inputs: Vec<String>) -> Survey {
         NEXT_USER_ID.with(|next_user_id_ref| {
             let mut counter = next_user_id_ref.get();
             counter += 1u64;
+            next_user_id_ref.set(counter);
             let new_survey = Survey {
                 id: counter,
                 title: title,
